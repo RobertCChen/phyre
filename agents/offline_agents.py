@@ -36,6 +36,7 @@ import tqdm
 import phyre
 import neural_agent
 
+
 State = Any
 TaskIds = Tuple[str, ...]
 
@@ -427,7 +428,8 @@ class DQNAgent(AgentWithSimulationCache):
                                                eval_batch_size,
                                                observations[task_index])
             # Order of descendig scores.
-            action_order = np.argsort(-scores)
+            action_order = np.argsort(-scores) 
+            np.savetxt('action_orders/action_order' + task_id[0:5] + '_' + task_id[6:] + '.txt', action_order)
             if not refine_iterations > 0:
                 statuses = cache.load_simulation_states(task_id)
 
@@ -499,5 +501,7 @@ class DQNAgent(AgentWithSimulationCache):
             dqn_rank_size = state['num_actions']
             logging.warning('Setting rank size to %d', dqn_rank_size)
         actions = state['cache'].action_array[:dqn_rank_size]
+        np.savetxt('tasks.txt', task_ids, fmt="%s")
+        np.savetxt('actions.txt', actions)
         return cls.real_eval(state['cache'], model, actions, task_ids, tier,
                              max_attempts_per_task, **eval_kwargs)
